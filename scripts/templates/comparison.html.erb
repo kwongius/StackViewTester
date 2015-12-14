@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>UIStackView comparison</title>
+    <meta charset="UTF-8">
+    <style type="text/css">
+
+      .stackview_class {
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .results_table {
+        margin: 0 auto;
+        border-collapse: separate;
+        border-spacing: 20px 0px;
+      }
+      td {
+        text-align: center;
+      }
+      tbody > tr > th {
+        border-bottom: 1px solid #ccc;
+        padding-top: 30px;
+        text-align: left;
+      }
+      tbody > tr > td {
+        width: 200px;
+        height: 200px;
+      }
+      td.passed {
+      }
+      td.failed {
+        border: 4px #A00 solid;
+        background: #FAA;
+      }
+      .view_size {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        color: #888;
+      }
+      .size_mismatch {
+        color: #A00;
+      }
+
+      td.result {
+        position: relative;
+      }
+      img {
+        max-width: calc(100% - 10px);
+        max-height: calc(100% - 10px);
+      }
+    </style>
+  </head>
+  <body>
+    <table class="results_table">
+      <thead>
+        <tr>
+          <% all_class_names.each do |class_name| %>
+          <th><span class="stackview_class"><%= class_name %></span></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% results.each do |result| %>
+          <% base_size = [0, 0] %>
+          <tr>
+            <th colspan="<%= result.images.count %>">
+              <span class="testName"><%= result.name %></span>
+            </th>
+          </tr>
+          <tr>
+            <% result.images.each_with_index do |screen_path, i| %>
+              <%
+              result_class = ""
+              if i > 0
+                result_class = "#{result.results[i]["success"] ? "passed" : "failed"}"
+              end
+              %>
+              <td class="result <%= result_class %>">
+                <%
+                r = result.results[i]
+                width = 0
+                height = 0
+                if screen_path.readable?
+                  size = FastImage.size(screen_path)
+                  base_size = size if i == 0
+                  width = size[0]
+                  height = size[1]
+                end
+
+                size_class = ""
+                if i > 0
+                  size_match = width == base_size[0] && height == base_size[1]
+                  size_class = "#{size_match ? "size_match" : "size_mismatch"}"
+                end
+                 %>
+                <span class="view_size <%= size_class %>"><%= "#{width}x#{height}" %></span>
+                <% if screen_path.readable? %>
+                  <a href="<%= screen_path %>">
+                    <img class="screenshot <%= result_class %>" src="<%= result.relative_images[i] %>" />
+                  </a>
+                <% else %>
+                  <pre>No Image</pre>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </body>
+</html>

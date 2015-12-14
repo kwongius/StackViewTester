@@ -1,0 +1,30 @@
+Images/
+metadata/
+_comparison/
+.DS_Store
+
+### Objective-C ###
+# Xcode
+#
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+
+# Pods are ignored as this application tests is intended to test compatibility
+# This includes Podfile.lock, because the version should always be the newest
+Pods/
+Podfile.lock
+
